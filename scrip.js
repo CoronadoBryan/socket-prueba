@@ -67,22 +67,6 @@ app.post('/emitir-conversacion', (req, res) => {
   res.send({ ok: true });
 });
 
-app.post('/emitir-actualizar-conversacion', (req, res) => {
-  const conversacion = req.body;
-  logger.socketReceive('/emitir-actualizar-conversacion', conversacion);
-  
-  if (conversacion.id_usuario) {
-    const roomName = `user-${conversacion.id_usuario}`;
-    io.to(roomName).emit('conversacion-actualizada', { conversacion });
-    logger.socketEmit('conversacion-actualizada', { conversacion, room: roomName });
-  } else {
-    io.emit('conversacion-actualizada', { conversacion });
-    logger.socketEmit('conversacion-actualizada', { conversacion, room: 'all' });
-  }
-  
-  res.send({ ok: true });
-});
-
 app.post('/emitir-estado-mensaje', (req, res) => {
   const { mensaje_id, nuevo_estado, datos_mensaje } = req.body;
   logger.socketReceive('/emitir-estado-mensaje', { mensaje_id, nuevo_estado, datos_mensaje });
@@ -115,8 +99,9 @@ app.post('/emitir-actualizar-contadores', (req, res) => {
   res.send({ ok: true });
 });
 
-server.listen(4000, () => {
-  logger.info('Socket.IO server iniciado en puerto 4000', { 
-    port: 4000,
+server.listen(3000, () => {
+  logger.info('Socket.IO server iniciado en puerto 3000', { 
+    port: 3000,
+    environment: process.env.NODE_ENV || 'development'
   });
 });
